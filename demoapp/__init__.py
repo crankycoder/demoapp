@@ -1,6 +1,7 @@
 from pyramid.config import Configurator
 
 from mozsvc.config import get_configurator
+from mozsvc.plugin import load_and_register
 
 from demoapp.resources import Root
 
@@ -15,7 +16,7 @@ def main(global_config, **settings):
     # option 2: auth based on IP address
     #config.include("pyramid_ipauth")
     # option 3: multiple stacked auth modules
-    config.include("pyramid_multiauth")
+    #config.include("pyramid_multiauth")
 
     # adds cornice
     config.include("cornice")
@@ -25,6 +26,10 @@ def main(global_config, **settings):
 
     # adds application-specific views
     config.add_route("whoami", "/whoami")
+
+    # initialize the metrics plugin
+    config.registry['metrics'] = load_and_register('metrics', config)
+
     config.scan("demoapp.views")
 
     return config.make_wsgi_app()

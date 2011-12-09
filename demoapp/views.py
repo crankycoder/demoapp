@@ -6,6 +6,9 @@ from pyramid.view import view_config
 
 from cornice import Service
 
+from mozsvc.metrics import timeit
+
+
 
 info_desc = """\
 This service is useful to get and set data for a user.
@@ -17,8 +20,8 @@ user_info = Service(name='users', path='/{username}/info',
 
 _USERS = defaultdict(dict)
 
-
 @user_info.get()
+@timeit
 def get_info(request):
     """Returns the public information about a **user**.
 
@@ -43,6 +46,7 @@ def set_info(request):
     return {'success': True}
 
 
+#@timeit
 @view_config(route_name="whoami", permission="authenticated", renderer="json")
 def whoami(request):
     """View returning the authenticated user's credentials."""
